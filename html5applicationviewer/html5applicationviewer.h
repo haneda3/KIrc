@@ -13,6 +13,8 @@
 #include <QWidget>
 #include <QUrl>
 
+#include "ircmessage.h"
+
 class QGraphicsWebView;
 
 class Html5ApplicationViewer : public QWidget
@@ -41,6 +43,9 @@ public:
 
 private:
     class Html5ApplicationViewerPrivate *m_d;
+
+public slots:
+    void addIRCMessage(IRCMessage msg);
 };
 
 #endif // HTML5APPLICATIONVIEWER_H

@@ -9,8 +9,14 @@ DEPLOYMENTFOLDERS = folder_01
 #DEFINES += TOUCH_OPTIMIZED_NAVIGATION
 
 # The .cpp file which was generated for your project. Feel free to hack it.
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    client.cpp \
+    ircmessage.cpp
 
 # Please do not modify the following two lines. Required for deployment.
 include(html5applicationviewer/html5applicationviewer.pri)
 qtcAddDeployment()
+
+HEADERS += \
+    client.h \
+    ircmessage.h
