@@ -1,22 +1,26 @@
-greaterThan(QT_MAJOR_VERSION, 4):QT += widgets webkitwidgets
+#-------------------------------------------------
+#
+# Project created by QtCreator 2014-04-04T03:33:48
+#
+#-------------------------------------------------
 
-# Add more folders to ship with the application, here
-folder_01.source = html
-folder_01.target = .
-DEPLOYMENTFOLDERS = folder_01
+QT       += core gui
 
-# Define TOUCH_OPTIMIZED_NAVIGATION for touch optimization and flicking
-#DEFINES += TOUCH_OPTIMIZED_NAVIGATION
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets webkitwidgets
 
-# The .cpp file which was generated for your project. Feel free to hack it.
-SOURCES += main.cpp \
-    client.cpp \
-    ircmessage.cpp
+TARGET = KIrc
+TEMPLATE = app
 
-# Please do not modify the following two lines. Required for deployment.
-include(html5applicationviewer/html5applicationviewer.pri)
-qtcAddDeployment()
 
-HEADERS += \
+SOURCES += main.cpp\
+        mainwindow.cpp \
+    client.cpp
+
+HEADERS  += mainwindow.h \
     client.h \
     ircmessage.h
+
+FORMS    += mainwindow.ui
+
+#
+CONFIG += c++11
