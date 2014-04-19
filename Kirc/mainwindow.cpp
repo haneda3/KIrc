@@ -54,3 +54,18 @@ void MainWindow::addIrcMessage(IRCMessage message)
     QString str = message.msg;
     ui->mainWebView->page()->mainFrame()->evaluateJavaScript("addIrcMessage('" + str + "');");
 }
+
+void MainWindow::on_mainLineEdit_returnPressed()
+{
+    const QString msg = this->ui->mainLineEdit->text();
+    qDebug("%s", qPrintable(msg));
+
+    IRCMessage ircMsg;
+    ircMsg.channel = "testha";
+    ircMsg.msg = msg;
+
+    client->sendMessage(ircMsg);
+
+    this->ui->mainLineEdit->setText("");
+    this->addIrcMessage(ircMsg);
+}

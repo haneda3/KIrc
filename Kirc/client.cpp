@@ -121,22 +121,45 @@ void Client::on_read()
         return;
     }
 
-    QStringList strList = ssss.trimmed().split(" ");
-    if (strList.at(1) == "PRIVMSG") {
-        qDebug("privmsg");
-//        qDebug(qPrintable(strList.at(2)));
+    QRegExp regex("^(\\S+)\\s+(\\S+)\\s+(.+)$");
+    QString sx = ssss.trimmed();
+    regex.indexIn(sx);
 
-        QString channel = strList.at(2);
-        QString msg = strList.at(3);
-        qDebug("%s %s", qPrintable(channel), qPrintable(msg));
+    if (regex.captureCount() != 3) {
+        qDebug("fail paarse command");
+        return;
+    }
+    QString prefix = regex.cap(1);
+    QString command = regex.cap(2);
+    QString params = regex.cap(3);
 
-        QString echo = "PRIVMSG " + channel + " " + msg;
-        _socket->write(echo.toLocal8Bit());
+    qDebug("prefix %s", qPrintable(prefix));
+    qDebug("command %s", qPrintable(command));
+    qDebug("params %s", qPrintable(params));
+
+    if (command == "PRIVMSG") {
+        qDebug("find PRIVMSG command");
+        QRegExp privmsgRegex("^#(\\S+)\\s+(.+)$");
+        privmsgRegex.indexIn(params);
+        if (privmsgRegex.captureCount() != 2) {
+            qDebug("fail parse privmsg Command");
+            return;
+        }
+
+        QString channel = privmsgRegex.cap(1);
+        QString msg = privmsgRegex.cap(2);
+        qDebug("%s/%s", qPrintable(channel), qPrintable(msg));
 
         IRCMessage im;
         im.channel = channel;
         im.msg = msg;
         emit addMessage(im);
+
+        // echo test
+        QString echo = "PRIVMSG #" + channel + " " + msg + "\r\n";
+        qDebug("%s", qPrintable(echo));
+        QByteArray ec = echo.toLocal8Bit();
+        _socket->write(echo.toLocal8Bit());
 
         return;
     }
@@ -167,4 +190,11 @@ void Client::connectToServer()
       //      b = a.toString();
         //    qDebug() << b;
     _socket->connectToHost(QHostAddress("183.181.22.185"), 6666);
+}
+
+void Client::sendMessage(const IRCMessage message)
+{
+    QString sendCommand = "PRIVMSG #" + message.channel + " " + ":" + message.msg + "\r\n";
+    qDebug("%s", qPrintable(sendCommand));
+    _socket->write(sendCommand.toLocal8Bit());
 }

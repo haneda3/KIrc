@@ -23,6 +23,8 @@ private:
 
 public slots:
     void addIrcMessage(IRCMessage message);
+private slots:
+    void on_mainLineEdit_returnPressed();
 };
 
 #endif // MAINWINDOW_H

@@ -12,6 +12,7 @@ class Client : public QObject
 public:
     explicit Client(QObject *parent = 0);
     void connectToServer();
+    void sendMessage(const IRCMessage message);
 
 signals:
     void addMessage(IRCMessage message);
@@ -22,7 +23,6 @@ public slots:
     void on_read();
 
     void getMessage(IRCMessage message);
-
 private:
     QTcpSocket* _socket;
 };
