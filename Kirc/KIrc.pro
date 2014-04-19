@@ -14,13 +14,16 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    client.cpp
+    client.cpp \
+    settingdialog.cpp
 
 HEADERS  += mainwindow.h \
     client.h \
-    ircmessage.h
+    ircmessage.h \
+    settingdialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    settingdialog.ui
 
 #
 CONFIG += c++11

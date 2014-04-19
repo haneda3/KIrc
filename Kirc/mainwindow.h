@@ -25,6 +25,7 @@ public slots:
     void addIrcMessage(IRCMessage message);
 private slots:
     void on_mainLineEdit_returnPressed();
+    void on_actionSettings_triggered();
 };
 
 #endif // MAINWINDOW_H

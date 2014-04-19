@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "settingdialog.h"
+
 #include <QwebFrame.h>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -68,4 +70,21 @@ void MainWindow::on_mainLineEdit_returnPressed()
 
     this->ui->mainLineEdit->setText("");
     this->addIrcMessage(ircMsg);
+}
+
+void MainWindow::on_actionSettings_triggered()
+{
+    SettingDialog sd;
+    int ret = sd.exec();
+    qDebug("%d", ret);
+    /*
+    Ui::SettingDialog *dlg = new Ui::SettingDialog();
+    dlg->show();
+    //settingDialog
+    dlg->setupUi(settingDialog);
+//    dlg.setupUi(settingDialog);
+    settingDialog->exec();
+//    QDialog qd;
+//   dlg.setupUi();
+*/
 }
