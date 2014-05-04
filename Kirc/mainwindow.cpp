@@ -26,7 +26,8 @@ MainWindow::MainWindow(QWidget *parent) :
             "    element.innerHTML = msg;"
             "    element.style.backgroundColor = 'red';"
             "    document.getElementById(\"ircmessage\").appendChild(element);"
-            "}</script></head>"
+            "}"
+            "</script></head>"
             "<body>"
             "        <div id=\"ircmessage\">ircmessage</div>"
             "        <input type=\"button\" value=\"hoge\" onclick='javascript:addIrcMessage(\"a\");'>"
@@ -53,7 +54,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::addIrcMessage(IRCMessage message)
 {
-    QString str = message.msg;
+    QString str = message.nick + ": " + message.msg;
     ui->mainWebView->page()->mainFrame()->evaluateJavaScript("addIrcMessage('" + str + "');");
 }
 
