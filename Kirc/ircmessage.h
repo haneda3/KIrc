@@ -15,6 +15,26 @@ class Line
 {
 public:
     Line(QString line) {
+        /*
+        <message>  ::= [':' <prefix> <SPACE> ] <command> <params> <crlf>
+        <prefix>   ::= <servername> | <nick> [ '!' <user> ] [ '@' <host> ]
+        <command>  ::= <letter> { <letter> } | <number> <number> <number>
+        <SPACE>    ::= ' ' { ' ' }
+        <params>   ::= <SPACE> [ ':' <trailing> | <middle> <params> ]
+
+        <middle>   ::= <先頭が':'ではなく,SPACE,NUL,CR,CFを含まない、空でないオクテットの列>
+        <trailing> ::= <SPACE,NUL,CR,CFを含まないオクテットの列(空のオクッテトの列も可)>
+        <crlf>     ::= CR LF
+        */
+
+
+        QRegExp re("^(:\\S+\\s)?(\\S+)(\\s.+)$");
+        re.indexIn(line);
+        QString prefix = re.cap(1).trimmed();
+        QString command = re.cap(2);
+        QString params = re.cap(3).trimmed();
+        /*
+
         QRegExp regex("^:(\\S+)\\s+(\\S+)\\s+(.+)$");
         regex.indexIn(line);
 
@@ -25,7 +45,7 @@ public:
         QString prefix = regex.cap(1);
         QString command = regex.cap(2);
         QString params = regex.cap(3);
-
+*/
         qDebug("prefix %s", qPrintable(prefix));
         qDebug("command %s", qPrintable(command));
         qDebug("params %s", qPrintable(params));

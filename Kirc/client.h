@@ -25,6 +25,9 @@ public slots:
     void getMessage(IRCMessage message);
 private:
     QTcpSocket* _socket;
+
+protected:
+    void parseMessage(QString message);
 };
 
 #endif // CLIENT_H

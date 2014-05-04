@@ -22,9 +22,6 @@ Client::Client(QObject *parent) :
 
 void Client::on_connected()
 {
-//    _socket->connectToHost(QHostAddress::LocalHost, 1234);
-//    QByteArray* byte = new QByteArray
-//    _socket->write()
     QString nick = "NICK testhaneda\n";
     QString user = "USER name host sever realname\n";
 
@@ -34,11 +31,6 @@ void Client::on_connected()
     _socket->write(user.toLocal8Bit());
     _socket->write(join.toLocal8Bit());
     _socket->flush();
-
-//    _socket
-//    _socket->write(nick, strlen(nick));
-//    _socket->write(user, strlen(user));
-//    _socket->write(join, strlen(join));
 }
 
 void Client::on_read()
@@ -47,7 +39,7 @@ void Client::on_read()
 
     #define BUF_SIZE 16
     char buf[BUF_SIZE];
-    std::stringstream sts;
+    std::stringstream stream;
 
     while (true) {
         if (_socket->bytesAvailable() <= 0) {
@@ -55,25 +47,22 @@ void Client::on_read()
         }
 
         qint64 read_size = _socket->read(buf, BUF_SIZE);
-        sts.write(buf, read_size);
-    }
-    std::string sss(sts.str());
-    QString ssss(sss.c_str());
-    qDebug("%s", qPrintable(ssss));
-
-    int n = ssss.indexOf("PING ");
-    if (n >= 0) {
-        QString x = ssss.replace("PING ", "");
-        qDebug("%s", qPrintable(x));
-        QString pong = QString("PONG ");
-        pong.append(x);
-        qDebug("%s", qPrintable(pong));
-        _socket->write(pong.toLocal8Bit());
-
-        return;
+        stream.write(buf, read_size);
     }
 
-    Line* line = new Line(ssss.trimmed());
+    QString msgList(stream.str().c_str());
+    qDebug("%s", qPrintable(msgList));
+
+    QStringList strList = msgList.split("\r\n", QString::SkipEmptyParts);
+    for (int i = 0 ; i < strList.count() ; i ++) {
+        this->parseMessage(strList.at(i));
+    }
+     qDebug("%s", "on_readyRead　end");
+}
+
+void Client::parseMessage(QString message) {
+
+    Line* line = new Line(message.trimmed());
 
     QString prefix = line->prefix();
     QString nick = line->nick();
@@ -85,8 +74,11 @@ void Client::on_read()
     qDebug("command %s", qPrintable(command));
     qDebug("params %s", qPrintable(params));
 
-    if (command == "PRIVMSG") {
-        qDebug("find PRIVMSG command");
+    if (command == "PING") {
+        QString pong = "PONG " + params;
+        _socket->write(pong.toLocal8Bit());
+    }
+    else if (command == "PRIVMSG") {
         QRegExp privmsgRegex("^#(\\S+)\\s+:(.+)$");
         privmsgRegex.indexIn(params);
         if (privmsgRegex.captureCount() != 2) {
@@ -107,16 +99,12 @@ void Client::on_read()
         // echo test
         QString echo = "PRIVMSG #" + channel + " " + msg + "\r\n";
         qDebug("%s", qPrintable(echo));
-        QByteArray ec = echo.toLocal8Bit();
         _socket->write(echo.toLocal8Bit());
 
         return;
     }
-
-
-
-     qDebug("%s", "on_readyRead　end");
 }
+
 
 void Client::getMessage(IRCMessage message) {
     qDebug("A");
