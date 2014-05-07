@@ -16,13 +16,13 @@ public:
 
 signals:
     void addMessage(IRCMessage message);
+    void addChannel(IRCChannel channel);
 
 public slots:
     void on_connected();
     void on_disconnected();
     void on_read();
 
-    void getMessage(IRCMessage message);
 private:
     QTcpSocket* _socket;
 

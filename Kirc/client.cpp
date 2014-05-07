@@ -16,8 +16,6 @@ Client::Client(QObject *parent) :
             SLOT(displayError(QAbstractSocket::SocketError))
             );
     connect(_socket, SIGNAL(readyRead()), this, SLOT(on_read()));
-
-    connect(this, SIGNAL(addMessage(IRCMessage)), this, SLOT(getMessage(IRCMessage)));
 }
 
 void Client::on_connected()
@@ -25,7 +23,7 @@ void Client::on_connected()
     QString nick = "NICK testhaneda\n";
     QString user = "USER name host sever realname\n";
 
-    QString join = "JOIN #testha\n";
+    QString join = "JOIN #testha,#testha2\n";
 
     _socket->write(nick.toLocal8Bit());
     _socket->write(user.toLocal8Bit());
@@ -51,7 +49,7 @@ void Client::on_read()
     }
 
     QString msgList(stream.str().c_str());
-    qDebug("%s", qPrintable(msgList));
+//    qDebug("%s", qPrintable(msgList));
 
     QStringList strList = msgList.split("\r\n", QString::SkipEmptyParts);
     for (int i = 0 ; i < strList.count() ; i ++) {
@@ -69,12 +67,27 @@ void Client::parseMessage(QString message) {
     QString command = line->command();
     QString params = line->params();
 
+    qDebug("== recv");
     qDebug("prefix %s", qPrintable(prefix));
     qDebug("nick %s", qPrintable(nick));
     qDebug("command %s", qPrintable(command));
     qDebug("params %s", qPrintable(params));
 
-    if (command == "PING") {
+    if (command == "JOIN") {
+        QRegExp chnRegex("^:#(\\S+)$");
+        chnRegex.indexIn(params);
+        if (chnRegex.captureCount() != 1) {
+            qDebug("fail parse join command");
+            return;
+        }
+        QString chName = chnRegex.cap(1);
+        qDebug("join %s", qPrintable(chName));
+
+        IRCChannel channel;
+        channel.name = chName;
+        emit addChannel(channel);
+    }
+    else if (command == "PING") {
         QString pong = "PONG " + params;
         _socket->write(pong.toLocal8Bit());
     }
@@ -104,12 +117,6 @@ void Client::parseMessage(QString message) {
         return;
     }
 }
-
-
-void Client::getMessage(IRCMessage message) {
-    qDebug("A");
-}
-
 
 void Client::on_disconnected()
 {

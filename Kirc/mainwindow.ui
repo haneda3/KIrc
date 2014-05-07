@@ -14,24 +14,34 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
-     <widget class="QWebView" name="mainWebView">
-      <property name="url">
-       <url>
-        <string>about:blank</string>
-       </url>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLineEdit" name="mainLineEdit">
-      <property name="maxLength">
-       <number>200</number>
-      </property>
-     </widget>
-    </item>
-   </layout>
+   <widget class="QLineEdit" name="mainLineEdit">
+    <property name="geometry">
+     <rect>
+      <x>12</x>
+      <y>541</y>
+      <width>142</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="maxLength">
+     <number>200</number>
+    </property>
+   </widget>
+   <widget class="QWebView" name="mainWebView">
+    <property name="geometry">
+     <rect>
+      <x>15</x>
+      <y>12</y>
+      <width>756</width>
+      <height>519</height>
+     </rect>
+    </property>
+    <property name="url">
+     <url>
+      <string>about:blank</string>
+     </url>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

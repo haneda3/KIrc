@@ -27,21 +27,33 @@ MainWindow::MainWindow(QWidget *parent) :
             "    element.style.backgroundColor = 'red';"
             "    document.getElementById(\"ircmessage\").appendChild(element);"
             "}"
+            "function addIrcChannel(channelName)"
+            "{"
+            "    var element = document.createElement('div');"
+            "    element.id = \"id\";"
+            "    element.innerHTML = channelName;"
+            "    element.style.backgroundColor = 'green';"
+            "    document.getElementById(\"ircchannel\").appendChild(element);"
+            "}"
             "</script></head>"
             "<body>"
+            "        <div id=\"ircchannel\">ircchannel</div>"
             "        <div id=\"ircmessage\">ircmessage</div>"
-            "        <input type=\"button\" value=\"hoge\" onclick='javascript:addIrcMessage(\"a\");'>"
+            "        <input type=\"input\" id=\"input_text\">"
+            "        <input type=\"button\" value=\"hoge\" onclick='javascript:addIrcMessage(input_text.value); myoperations.submit(input_text.value);'>"
             "        <a id=\"quit\">X</a>"
             "</body>"
             "";
     ui->mainWebView->setHtml(html);
 
-    QWebFrame* frame = ui->mainWebView->page()->mainFrame();
-    frame->evaluateJavaScript("addIrcMessage('a');");
-
     client = new Client(this);
 
+    QWebFrame* frame = ui->mainWebView->page()->mainFrame();
+    frame->evaluateJavaScript("addIrcMessage('a');");
+    frame->addToJavaScriptWindowObject("myoperations", new MyJavaScriptOperations(client));
+//    frame->evaluateJavaScript("addIrcChannel('ttt');");
     connect(client, SIGNAL(addMessage(IRCMessage)), this, SLOT(addIrcMessage(IRCMessage)));
+    connect(client, SIGNAL(addChannel(IRCChannel)), this, SLOT(addIrcChannel(IRCChannel)));
 
     client->connectToServer();
 }
@@ -56,6 +68,11 @@ void MainWindow::addIrcMessage(IRCMessage message)
 {
     QString str = message.nick + ": " + message.msg;
     ui->mainWebView->page()->mainFrame()->evaluateJavaScript("addIrcMessage('" + str + "');");
+}
+
+void MainWindow::addIrcChannel(IRCChannel channel)
+{
+    ui->mainWebView->page()->mainFrame()->evaluateJavaScript("addIrcChannel('" + channel.name + "');");
 }
 
 void MainWindow::on_mainLineEdit_returnPressed()

@@ -3,6 +3,12 @@
 
 #include <QObject>
 
+class IRCChannel
+{
+public:
+    QString name;
+};
+
 class IRCMessage
 {
 public:
