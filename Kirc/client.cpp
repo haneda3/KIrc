@@ -91,7 +91,7 @@ void Client::parseMessage(QString message) {
         QString pong = "PONG " + params;
         _socket->write(pong.toLocal8Bit());
     }
-    else if (command == "PRIVMSG") {
+    else if (command == "PRIVMSG" || command == "NOTICE") {
         QRegExp privmsgRegex("^#(\\S+)\\s+:(.+)$");
         privmsgRegex.indexIn(params);
         if (privmsgRegex.captureCount() != 2) {
